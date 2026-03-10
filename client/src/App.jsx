@@ -135,7 +135,8 @@ function UserDashboard() {
     // Before showing checkout form, fetch a payment intent
     try {
       setRideStatus('checkout')
-      const res = await fetch('http://localhost:5000/api/create-payment-intent', {
+      const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+      const res = await fetch(`${serverUrl}/api/create-payment-intent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: fare }),

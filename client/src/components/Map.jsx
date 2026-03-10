@@ -14,7 +14,7 @@ const Map = ({ pickup, dropoff, routeGeoJSON, driverLocation }) => {
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://tiles.stadiamaps.com/styles/alidade_smooth.json',
+      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
       center: [-74.006, 40.7128], // Default NYC
       zoom: 12
     });
