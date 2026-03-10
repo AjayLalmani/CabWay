@@ -15,20 +15,37 @@ const app = express()
 // Create HTTP server wrapping our Express app
 const httpServer = createServer(app)
 
+// CORS Configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.CLIENT_URL,
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    // If the origin is our explicit client URL or localhost, allow it
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    // Alternatively, dynamically allow ANY vercel.app subdomain for PR previews
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+};
+
 // Initialize Socket.io server
 const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ["GET", "POST"],
-    credentials: true,
-  }
+  cors: corsOptions
 })
 
 // Express Middleware
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}))
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(clerkMiddleware())
 
