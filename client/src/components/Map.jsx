@@ -72,22 +72,20 @@ const Map = ({ pickup, dropoff, routeGeoJSON, driverLocation }) => {
 
     // Driver location update
     if (driverLocation) {
-      let driverEl = document.getElementById('driver-marker');
-      if (!driverEl) {
-        driverEl = document.createElement('div');
+      if (!driverMarker.current) {
+        let driverEl = document.createElement('div');
         driverEl.id = 'driver-marker';
         driverEl.className = 'w-6 h-6 bg-black rounded-full border-2 border-white shadow-lg flex items-center justify-center';
         // Simple car icon representation
         driverEl.innerHTML = '<div class="w-3 h-3 bg-yellow-400 rounded-sm"></div>';
         
-        // We attach this element to the map as a custom marker
-        new maplibregl.Marker(driverEl)
+        // We attach this element to the map as a custom marker and store the reference
+        driverMarker.current = new maplibregl.Marker(driverEl)
           .setLngLat([driverLocation.lng, driverLocation.lat])
           .addTo(map.current);
       } else {
-        // Find existing marker instance. MapLibre doesn't easily expose markers by DOM node, 
-        // so we just update the transform directly for raw performance on the mock.
-        // A robust solution stores the driverMarker ref similar to pickupMarker.
+        // Update the existing marker's position
+        driverMarker.current.setLngLat([driverLocation.lng, driverLocation.lat]);
       }
     }
 
