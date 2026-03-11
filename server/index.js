@@ -103,6 +103,18 @@ app.post('/api/users/sync', async (req, res) => {
       .select();
       
     if (error) throw error;
+
+    if (role === 'driver') {
+      // Create a default driver profile if one doesn't exist
+      const { error: driverError } = await supabase
+        .from('drivers')
+        .insert([{ id, vehicle_type: 'Standard', vehicle_plate: 'Unregistered', status: 'online' }]);
+        
+      if (driverError && driverError.code !== '23505') { // Ignore unique constraint violation
+        console.error("Failed to create driver profile:", driverError);
+      }
+    }
+
     res.json(data[0]);
   } catch (err) {
     console.error("User Sync Error:", err);
