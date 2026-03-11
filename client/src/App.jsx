@@ -9,7 +9,7 @@ import { socket } from './lib/socket.js'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { SignedIn, SignedOut, SignIn, UserButton, useAuth, useUser } from '@clerk/clerk-react'
-import { createRide, updateRideStatus, getDriverProfile, syncUserToDatabase } from './lib/api.js'
+import { createRide, updateRideStatus, getDriverProfile, syncUserToDatabase, acceptRide } from './lib/api.js'
 
 const GEOAPIFY_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder');
@@ -406,8 +406,7 @@ function DriverDashboard() {
     try {
       const token = await getToken();
       // Call backend to update Supabase row
-      const requireAuth = true; // Make sure the user is set as a driver in DB.
-      // Note: We'll just emit for now if the accept endpoint fails due to missing driver DB setup
+      await acceptRide(token, incomingRequest.rideId);
       
       socket.emit('accept-ride', {
         ...incomingRequest,

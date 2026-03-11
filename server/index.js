@@ -217,6 +217,7 @@ app.post('/api/rides/:id/rating', requireAuth(), async (req, res) => {
     if (fetchError || !rideData) throw new Error('Ride not found');
     if (rideData.status !== 'completed') throw new Error('Can only rate completed rides');
     if (rideData.rider_id !== rider_id) throw new Error('Unauthorized');
+    if (!rideData.driver_id) return res.status(400).json({ error: 'Cannot review a ride without a driver' });
 
     // 2. Insert Review (Supabase Trigger handles the average rating update)
     const { data, error } = await supabase

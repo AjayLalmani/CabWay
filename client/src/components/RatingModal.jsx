@@ -23,7 +23,7 @@ export default function RatingModal({ ride, onClose }) {
       setTimeout(onClose, 2000); // close after 2 seconds
     } catch (err) {
       console.error(err);
-      alert('Failed to submit review. You may have already reviewed this ride.');
+      alert(err.message || 'Failed to submit review.');
     } finally {
       setSubmitting(false);
     }

@@ -136,7 +136,10 @@ export async function submitReview(token, rideId, rating, comment) {
       body: JSON.stringify({ rating, comment })
     });
     
-    if (!res.ok) throw new Error('Failed to submit review');
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || 'Failed to submit review');
+    }
     return await res.json();
   } catch (error) {
     console.error('API Error:', error);
